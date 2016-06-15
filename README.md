@@ -35,6 +35,7 @@ Usage:
     check-consul-health.py node NODE DC
         [--addr=ADDR]
         [--CheckID=CheckID | --ServiceName=ServiceName]
+        [--nagios-output]
         [--verbose]
 
 Arguments:
@@ -44,6 +45,7 @@ Arguments:
 Options:
     -h --help                  show this
     -v --verbose               verbose output
+    -n --nagios-output         use Nagios plugin output (only useful when checking one service)
     --addr=ADDR                consul address [default: http://localhost:8500]
     --CheckID=CheckID          CheckID matcher
     --ServiceName=ServiceName  ServiceName matcher
