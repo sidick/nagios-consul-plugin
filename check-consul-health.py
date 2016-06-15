@@ -23,7 +23,7 @@ from docopt import docopt
 import requests
 import json
 import traceback
-import exeptions
+import exceptions
 
 
 def dump(it):
