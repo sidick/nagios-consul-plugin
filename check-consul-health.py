@@ -3,6 +3,7 @@
     check-consul-health.py node NODE DC
         [--addr=ADDR]
         [--CheckID=CheckID | --ServiceName=ServiceName]
+        [--nagios-output]
         [--verbose]
 
 Arguments:
@@ -12,6 +13,7 @@ Arguments:
 Options:
     -h --help                  show this
     -v --verbose               verbose output
+    -n --nagios-output         use Nagios plugin output (only useful when checking one service)
     --addr=ADDR                consul address [default: http://localhost:8500]
     --CheckID=CheckID          CheckID matcher
     --ServiceName=ServiceName  ServiceName matcher
@@ -38,6 +40,10 @@ def getJsonFromUrl(url):
 def printCheck(check):
     print "> %(Node)s:%(ServiceName)s:%(Name)s:%(CheckID)s:%(Status)s" % check
 
+def printNagiosCheck(state, check):
+    if len(check) == 1:
+        print "%s" % (check[0]['Output'])
+
 def processFailing(checks):
     filters = map(lambda field: \
         lambda x: arguments['--' + field] is None or x[field] == arguments['--'+field],
@@ -59,6 +65,13 @@ def processFailing(checks):
 
     checkOutput = lambda x: x["Name"] + ":" + x["Output"]
 
+    if arguments['--nagios-output']:
+        if len(critical):
+            printNagiosCheck( "CRITICAL", critical)
+        elif len(warning):
+            printNagiosCheck( "WARNING", warning)
+        else:
+            printNagiosCheck( "OK", passing)
     if len(critical):
         print "|".join(map(checkOutput, critical))
         for check in critical:
