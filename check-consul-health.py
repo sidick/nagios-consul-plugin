@@ -4,6 +4,7 @@
         [--addr=ADDR]
         [--CheckID=CheckID | --ServiceName=ServiceName]
         [--nagios-output]
+        [--strip-domain]
         [--verbose]
 
 Arguments:
@@ -14,6 +15,7 @@ Options:
     -h --help                  show this
     -v --verbose               verbose output
     -n --nagios-output         use Nagios plugin output (only useful when checking one service)
+    -s --strip-domain          Strip the domain name from the full hostname provided
     --addr=ADDR                consul address [default: http://localhost:8500]
     --CheckID=CheckID          CheckID matcher
     --ServiceName=ServiceName  ServiceName matcher
@@ -32,6 +34,9 @@ def dump(it):
 
 
 def buildNodeUrl():
+    if arguments['--strip-domain']:
+        arguments['NODE'] = arguments['NODE'].partition('.')[0]
+
     url = "%(--addr)s/v1/health/node/%(NODE)s?dc=%(DC)s" % arguments
     dump("Url: " + url)
     return url
