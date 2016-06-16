@@ -26,6 +26,7 @@ import requests
 import json
 import traceback
 import exceptions
+import re
 
 
 def dump(it):
@@ -56,7 +57,12 @@ def printCheck(check):
 
 def printNagiosCheck(state, check):
     if len(check) == 1:
-        print "%s" % (check[0]['Output'])
+        if re.match('^%s' % state, check[0]['Output']):
+            print "%s" % (check[0]['Output'])
+        else:
+            print "%s: %s" % (state, check[0]['Output'])
+    else:
+        print "%s:" % state
 
 
 def processFailing(checks):
